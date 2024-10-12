@@ -4,7 +4,7 @@
 
 int main() {
   int n = 50;
-  Graph graph(Graph::randomHoledGraph(n,0.1,3));
+  Graph graph(Graph::randomGraph(n,0.2,2));
   /*
   Graph graph({{0, 1, 0, 1, 1, 1, 0, 0, 0},
                {1, 0, 1, 1, 0, 0, 0, 0, 1},
@@ -21,17 +21,17 @@ int main() {
   sf::VertexArray points(sf::PrimitiveType::Points);
   for (auto point : computedPoints) {
     points.append(
-        sf::Vector2f(500 + 1000 * point.first, 500 + 1000 * point.second));
+        sf::Vector2f(500 + 500 * point.first, 500 + 500 * point.second));
   }
 
   std::vector<std::vector<sf::Vertex>> lines;
   for (int i = 0; i < n; ++i) {
     for (int j = i + 1; j < n; ++j) {
       if ((*graph.getAdjacencyMatrix())(i, j) > 0.001) {
-        lines.push_back({sf::Vertex(sf::Vector2f(500 + 1000 * computedPoints[i].first,
-                                   500 + 1000 * computedPoints[i].second)),
-                      sf::Vertex(sf::Vector2f(500 + 1000 * computedPoints[j].first,
-                                   500 + 1000 * computedPoints[j].second))});
+        lines.push_back({sf::Vertex(sf::Vector2f(500 + 500 * computedPoints[i].first,
+                                   500 + 500 * computedPoints[i].second)),
+                      sf::Vertex(sf::Vector2f(500 + 500 * computedPoints[j].first,
+                                   500 + 500 * computedPoints[j].second))});
       }
     }
   }

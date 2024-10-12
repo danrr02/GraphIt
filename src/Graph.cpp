@@ -136,7 +136,7 @@ const std::size_t Graph::getOrder() const { return order; }
 Graph Graph::randomGraph(std::size_t order, double p, int k) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  assert(p >= 0 && 1 <= p);
+  assert(p >= 0 && 1 >= p);
   std::bernoulli_distribution d(p);
   Eigen::MatrixXd adj = Eigen::MatrixXd::Zero(order, order);
   for (std::size_t i = 0; i < order; ++i) {

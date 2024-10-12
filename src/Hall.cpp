@@ -8,7 +8,7 @@ std::vector<double> Hall1D(Graph& graph){
 }
 
 std::vector<std::pair<double,double>> Hall2D(Graph& graph){
-  //if(!graph.isConnected()){std::cout << "Error: Graph not connected." << std::endl;}
+  if(!graph.isConnected()){std::cout << "Error: Graph not connected." << std::endl;}
   Eigen::SelfAdjointEigenSolver<Eigen::MatrixXd> es(*graph.getLaplacianMatrix()); 
   auto evecs = es.eigenvectors();
   Eigen::Index n{evecs.rows()};
