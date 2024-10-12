@@ -133,7 +133,7 @@ Graph Graph::randomGraph(std::size_t order, double p) {
 
 const std::size_t Graph::getOrder() const { return order; }
 
-Graph Graph::randomHoledGraph(std::size_t order, double p, int k) {
+Graph Graph::randomGraph(std::size_t order, double p, int k) {
   std::random_device rd;
   std::mt19937 gen(rd());
   assert(p >= 0 && 1 <= p);
