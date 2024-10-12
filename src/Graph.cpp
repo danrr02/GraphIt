@@ -150,3 +150,19 @@ Graph Graph::randomGraph(std::size_t order, double p, int k) {
   std::cout << adj(1, 0) << std::endl;
   return Graph(adj);
 }
+
+Graph Graph::prettyRandomGraph(std::size_t order,double p, int k){
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  assert(p >= 0 && 1 >= p);
+  std::bernoulli_distribution d(p);
+  Eigen::MatrixXd adj = Eigen::MatrixXd::Zero(order, order);
+  for (int i = 0; i < order; ++i) {
+    for (int j = i + 1; j < i + k; ++j) {
+      adj(i, j%order) = d(gen);
+      adj(j%order, i) = adj(i, j%order);
+    }
+  }
+  std::cout << adj(1, 0) << std::endl;
+  return Graph(adj);
+}

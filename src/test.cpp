@@ -9,7 +9,7 @@ int main(){
   //std::vector<std::pair<double,double>> result = Hall2D(graph);
   //for(auto res: result){std::cout << res.first << "," << res.second << std::endl;} 
   
-  Graph graph1 = Graph::randomGraph(5,1,3);
+  Graph graph1 = Graph::prettyRandomGraph(20);
   std::cout << graph1.isConnected()  << "____" << std::endl;
   std::cout << *graph1.getAdjacencyMatrix() << std::endl;
   std::cout << *graph1.getDegreeMatrix() << std::endl;
