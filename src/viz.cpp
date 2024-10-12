@@ -3,8 +3,8 @@
 #include <array>
 
 int main() {
-  int n = 200;
-  Graph graph(Graph::randomGraph(n));
+  int n = 50;
+  Graph graph(Graph::randomHoledGraph(n,0.1,3));
   /*
   Graph graph({{0, 1, 0, 1, 1, 1, 0, 0, 0},
                {1, 0, 1, 1, 0, 0, 0, 0, 1},
@@ -17,27 +17,21 @@ int main() {
                {0, 1, 1, 0, 1, 0, 0, 0, 0}});
                */
   std::vector<std::pair<double, double>> computedPoints(Hall2D(graph));
-  sf::RenderWindow window(sf::VideoMode(800, 800), "SFML works!");
+  sf::RenderWindow window(sf::VideoMode(1000, 1000), "GraphIt");
   sf::VertexArray points(sf::PrimitiveType::Points);
   for (auto point : computedPoints) {
     points.append(
-        sf::Vector2f(400 + 400 * point.first, 400 + 400 * point.second));
+        sf::Vector2f(500 + 1000 * point.first, 500 + 1000 * point.second));
   }
-
-  std::vector<sf::Vertex> line = {sf::Vertex(sf::Vector2f(400 + 400 * computedPoints[0].first,
-                                   400 + 400 * computedPoints[0].second)),
-                      sf::Vertex(sf::Vector2f(400 + 400 * computedPoints[1].first,
-                                   400 + 400 * computedPoints[1].second))};
-
 
   std::vector<std::vector<sf::Vertex>> lines;
   for (int i = 0; i < n; ++i) {
     for (int j = i + 1; j < n; ++j) {
       if ((*graph.getAdjacencyMatrix())(i, j) > 0.001) {
-        lines.push_back({sf::Vertex(sf::Vector2f(400 + 400 * computedPoints[i].first,
-                                   400 + 400 * computedPoints[i].second)),
-                      sf::Vertex(sf::Vector2f(400 + 400 * computedPoints[j].first,
-                                   400 + 400 * computedPoints[j].second))});
+        lines.push_back({sf::Vertex(sf::Vector2f(500 + 1000 * computedPoints[i].first,
+                                   500 + 1000 * computedPoints[i].second)),
+                      sf::Vertex(sf::Vector2f(500 + 1000 * computedPoints[j].first,
+                                   500 + 1000 * computedPoints[j].second))});
       }
     }
   }

@@ -59,8 +59,8 @@ const std::shared_ptr<const Eigen::MatrixXd> Graph::generateDegreeMatrix(
   return degreeMatrix;
 }
 
-const bool
-Graph::connectedGraph(const std::shared_ptr<const Eigen::MatrixXd> adjacencyMatrix) {
+const bool Graph::connectedGraph(
+    const std::shared_ptr<const Eigen::MatrixXd> adjacencyMatrix) {
   std::size_t order = adjacencyMatrix->rows();
   std::vector<bool> visited(order, false);
   std::deque<int> queue = {0};
@@ -115,12 +115,11 @@ const std::shared_ptr<const Eigen::MatrixXd> Graph::getLaplacianMatrix() const {
 
 const bool Graph::isConnected() const { return connected; }
 
-Graph Graph::randomGraph(std::size_t order) {
+Graph Graph::randomGraph(std::size_t order, double p) {
   std::random_device rd;
   std::mt19937 gen(rd());
-  // give "true" 1/4 of the time
-  // give "false" 3/4 of the time
-  std::bernoulli_distribution d(0.05);
+  assert(p >= 0 && 1 <= p);
+  std::bernoulli_distribution d(p);
   Eigen::MatrixXd adj = Eigen::MatrixXd::Zero(order, order);
   for (std::size_t i = 0; i < order; ++i) {
     for (std::size_t j = i + 1; j < order; ++j) {
@@ -132,4 +131,22 @@ Graph Graph::randomGraph(std::size_t order) {
   return Graph(adj);
 }
 
-const std::size_t Graph::getOrder() const{return order;}
+const std::size_t Graph::getOrder() const { return order; }
+
+Graph Graph::randomHoledGraph(std::size_t order, double p, int k) {
+  std::random_device rd;
+  std::mt19937 gen(rd());
+  assert(p >= 0 && 1 <= p);
+  std::bernoulli_distribution d(p);
+  Eigen::MatrixXd adj = Eigen::MatrixXd::Zero(order, order);
+  for (std::size_t i = 0; i < order; ++i) {
+    for (std::size_t j = i + 1; j < order; ++j) {
+      if ((j - i) & k != 0) {
+        adj(i, j) = d(gen);
+        adj(j, i) = adj(i, j);
+      }
+    }
+  }
+  std::cout << adj(1, 0) << std::endl;
+  return Graph(adj);
+}
