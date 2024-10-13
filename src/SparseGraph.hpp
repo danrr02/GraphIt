@@ -36,7 +36,7 @@ template <typename T> class SparseGraph {
 
 public:
   // construct from initializer lists - for graphs defined by hand
-  SparseGraph(const std::initializer_list<std::initializer_list<double>>);
+  //SparseGraph(const std::initializer_list<std::initializer_list<double>>);
 
   // constuctor from matrix
   SparseGraph(const T);
@@ -55,7 +55,7 @@ public:
   const std::size_t getOrder() const;
 
   // utility functions used by constructors
-  static const std::shared_ptr<const T> generateAdjacencyMatrix(
+  static const std::shared_ptr<const DenseMat> generateAdjacencyMatrix(
       std::initializer_list<std::initializer_list<double>>);
   
   static const std::shared_ptr<const T>
@@ -70,12 +70,16 @@ public:
 
   static const bool
   connectedGraph(const std::shared_ptr<const T> &);
+};
 
-  // generate random graphs
-  static SparseGraph<DenseMat> randomGraph(std::size_t, double);
+namespace Generate{
+  template <typename T> 
+  SparseGraph<T> randomGraph(std::size_t, double);
 
-  static SparseGraph<T> randomGraph(std::size_t, double, int);
+  template <>
+  SparseGraph<DenseMat> randomGraph<DenseMat>(std::size_t, double);
 
-  static SparseGraph<T> prettyRandomGraph(std::size_t, double p = 0.8,
-                                          int k = 6);
+  template <>
+  SparseGraph<SparseMat> randomGraph<SparseMat>(std::size_t, double);
+
 };

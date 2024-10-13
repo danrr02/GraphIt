@@ -104,3 +104,68 @@ template <typename T>
 std::shared_ptr<const T> SparseGraph<T>::getLaplacianMatrix() const {
   return laplacianMatrix;
 }
+
+template <typename T>
+const bool SparseGraph<T>::isConnected() const{
+  return connected;
+}
+
+namespace Generate{
+  template <>
+  SparseGraph<DenseMat> randomGraph<DenseMat>(std::size_t order, double p){
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    assert(p >= 0 && 1 >= p);
+    std::bernoulli_distribution d(p);
+    DenseMat adj(order, order);
+    for (std::size_t i = 0; i < order; ++i) {
+      for (std::size_t j = i + 1; j < order; ++j) {
+        adj(i, j) = d(gen);
+        adj(j, i) = adj(i, j);
+      }
+    }
+    return SparseGraph<DenseMat>(adj);
+  }
+
+  template <>
+  SparseGraph<SparseMat> randomGraph<SparseMat>(std::size_t order, double p){
+    std::random_device rd;
+    std::mt19937 gen(rd());
+    assert(p >= 0 && 1 >= p);
+    std::bernoulli_distribution d(p);
+    SparseMat adj(order, order);
+    for (std::size_t i = 0; i < order; ++i) {
+      for (std::size_t j = i + 1; j < order; ++j) {
+        int val = d(gen);
+        adj.insert(i, j) = val;
+        adj.insert(j, i) = val;
+      }
+    }
+    return SparseGraph<SparseMat>(adj);
+  }
+}
+
+template<>
+const std::shared_ptr<const DenseMat> SparseGraph<DenseMat>::generateAdjacencyMatrix(
+    std::initializer_list<std::initializer_list<double>> g) {
+  auto adjacencyMatrix =
+      std::make_shared<const Eigen::MatrixXd>(Eigen::MatrixXd(g));
+  if (adjacencyMatrix->cols() != adjacencyMatrix->rows()) {
+    throw std::runtime_error("Invalid adjacency matrix - not square.");
+  }
+  std::size_t n = adjacencyMatrix->rows();
+  for (std::size_t i = 0; i < n; ++i) {
+    for (std::size_t j = i; j < n; ++j) {
+      if (i == j && (*adjacencyMatrix)(i, j) != 0) {
+        throw std::runtime_error(
+            "Error: Invalid adjacency matrix - invalid entries.");
+      } else if ((*adjacencyMatrix)(i, j) != (*adjacencyMatrix)(j, i) ||
+                 ((*adjacencyMatrix)(i, j) != 0 &&
+                  (*adjacencyMatrix)(i, j) != 1)) {
+        throw std::runtime_error(
+            "Error: Invalid adjacency matrix - invalid entries.");
+      }
+    }
+  }
+  return adjacencyMatrix;
+}
