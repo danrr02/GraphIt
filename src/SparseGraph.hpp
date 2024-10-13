@@ -1,0 +1,81 @@
+/*
+Declaration of the Graph class.
+*/
+
+#pragma once
+
+#include <deque>
+#include <eigen3/Eigen/Dense>
+#include <eigen3/Eigen/Sparse>
+#include <exception>
+#include <fstream>
+#include <iostream>
+#include <memory>
+#include <numeric>
+#include <random>
+#include <vector>
+
+template <typename T> class SparseGraph {
+  // Orer of the graph
+  const std::size_t order;
+
+  // pointer to adjacency matrix
+  const std::shared_ptr<const T> adjacencyMatrix;
+
+  // pointer to degree matrix
+  const std::shared_ptr<const T> degreeMatrix;
+
+  // pointer to laplacian matrix
+  const std::shared_ptr<const T> laplacianMatrix;
+
+  const bool connected;
+
+public:
+  // construct from initializer lists - for graphs defined by hand
+  SparseGraph(const std::initializer_list<std::initializer_list<double>>);
+
+  // constuctor from matrix
+  SparseGraph(const T);
+
+  SparseGraph(std::ifstream); // to implement
+
+  // getters for member fields
+  std::shared_ptr<const T> getAdjacencyMatrix() const;
+
+  std::shared_ptr<const T> getDegreeMatrix() const;
+
+  std::shared_ptr<const T> getLaplacianMatrix() const;
+
+  const bool isConnected() const;
+
+  const std::size_t getOrder() const;
+
+  // utility functions used by constructors
+  static const std::shared_ptr<const T> generateAdjacencyMatrix(
+      std::initializer_list<std::initializer_list<double>>);
+
+  static const std::shared_ptr<const Eigen::MatrixXd> generateAdjacencyMatrix(const Eigen::MatrixXd);
+
+  static const std::shared_ptr<const Eigen::SparseMatrix<double>> generateAdjacencyMatrix(const Eigen::SparseMatrix<double>);
+
+  static const std::shared_ptr<const Eigen::MatrixXd>
+  generateDegreeMatrix(const std::shared_ptr<const Eigen::MatrixXd>);
+
+  static const std::shared_ptr<const Eigen::SparseMatrix<double>>
+  generateDegreeMatrix(
+      const std::shared_ptr<const Eigen::SparseMatrix<double>>);
+
+  static const bool
+  connectedGraph(const std::shared_ptr<const Eigen::MatrixXd> &);
+
+  static const bool
+  connectedGraph(const std::shared_ptr < const Eigen::SparseMatrix<double>> &);
+
+      // generate random graphs
+      static SparseGraph<T> randomGraph(std::size_t, double);
+
+  static SparseGraph<T> randomGraph(std::size_t, double, int);
+
+  static SparseGraph<T> prettyRandomGraph(std::size_t, double p = 0.8,
+                                          int k = 6);
+};

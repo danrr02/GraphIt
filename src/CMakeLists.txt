@@ -1,0 +1,1 @@
+add_executable(test test.cpp Graph.cpp Hall.cpp)
