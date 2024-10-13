@@ -2,6 +2,30 @@
 
 #include "SparseGraph.hpp"
 
+template<typename T>
+const std::shared_ptr<const T> SparseGraph<T>::generateAdjacencyMatrix(const T g){
+  std::shared_ptr<const T> adjacencyMatrix =
+      std::make_shared<const T>(g);
+  if (adjacencyMatrix->cols() != adjacencyMatrix->rows()) {
+    throw std::runtime_error("Invalid adjacency matrix - not square.");
+  }
+  std::size_t n = adjacencyMatrix->rows();
+  for (std::size_t i = 0; i < n; ++i) {
+    for (std::size_t j = i; j < n; ++j) {
+      if (i == j && adjacencyMatrix->coeff(i, j) != 0) {
+        throw std::runtime_error(
+            "Error: Invalid adjacency matrix - invalid entries.");
+      } else if (adjacencyMatrix->coeff(i, j) != adjacencyMatrix->coeff(j, i) ||
+                 (adjacencyMatrix->coeff(i, j) != 0 &&
+                  adjacencyMatrix->coeff(i, j) != 1)) {
+        throw std::runtime_error(
+            "Error: Invalid adjacency matrix - invalid entries.");
+      }
+    }
+  }
+  return adjacencyMatrix;
+}
+
 template <>
 const std::shared_ptr<const DenseMat>
 SparseGraph<DenseMat>::generateDegreeMatrix(
