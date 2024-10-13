@@ -6,7 +6,7 @@ template <class T>
 const std::shared_ptr<const T> SparseGraph<T>::generateAdjacencyMatrix(
     std::initializer_list<std::initializer_list<double>> g) {
   std::shared_ptr<const T> adjacencyMatrix =
-      std::make_shared<const T>(Eigen::MatrixXd(g));
+      std::make_shared<const T>(DenseMat(g));
   if (adjacencyMatrix->cols() != adjacencyMatrix->rows()) {
     throw std::runtime_error("Invalid adjacency matrix - not square.");
   }
@@ -28,10 +28,10 @@ const std::shared_ptr<const T> SparseGraph<T>::generateAdjacencyMatrix(
 }
 
 template <>
-const std::shared_ptr<const Eigen::MatrixXd>
-SparseGraph<Eigen::MatrixXd>::generateAdjacencyMatrix(const Eigen::MatrixXd g) {
-  std::shared_ptr<const Eigen::MatrixXd> adjacencyMatrix =
-      std::make_shared<const Eigen::MatrixXd>(g);
+const std::shared_ptr<const DenseMat>
+SparseGraph<DenseMat>::generateAdjacencyMatrix(const DenseMat g) {
+  std::shared_ptr<const DenseMat> adjacencyMatrix =
+      std::make_shared<const DenseMat>(g);
   if (adjacencyMatrix->cols() != adjacencyMatrix->rows()) {
     throw std::runtime_error("Invalid adjacency matrix - not square.");
   }
@@ -53,9 +53,9 @@ SparseGraph<Eigen::MatrixXd>::generateAdjacencyMatrix(const Eigen::MatrixXd g) {
 }
 
 template<>
-const std::shared_ptr<const Eigen::SparseMatrix<double>> SparseGraph<Eigen::SparseMatrix<double>>::generateAdjacencyMatrix(const Eigen::SparseMatrix<double> g){
-  std::shared_ptr<const Eigen::SparseMatrix<double>> adjacencyMatrix =
-      std::make_shared<const Eigen::SparseMatrix<double>>(g);
+const std::shared_ptr<const SparseMat> SparseGraph<SparseMat>::generateAdjacencyMatrix(const SparseMat g){
+  std::shared_ptr<const SparseMat> adjacencyMatrix =
+      std::make_shared<const SparseMat>(g);
   if (adjacencyMatrix->cols() != adjacencyMatrix->rows()) {
     throw std::runtime_error("Invalid adjacency matrix - not square.");
   }
@@ -77,12 +77,12 @@ const std::shared_ptr<const Eigen::SparseMatrix<double>> SparseGraph<Eigen::Spar
 }
 
 template <>
-const std::shared_ptr<const Eigen::MatrixXd>
-SparseGraph<Eigen::MatrixXd>::generateDegreeMatrix(
-    const std::shared_ptr<const Eigen::MatrixXd> adjacencyMatrix) {
+const std::shared_ptr<const DenseMat>
+SparseGraph<DenseMat>::generateDegreeMatrix(
+    const std::shared_ptr<const DenseMat> adjacencyMatrix) {
   std::size_t n = adjacencyMatrix->rows();
   auto degreeMatrix =
-      std::make_shared<Eigen::MatrixXd>(Eigen::MatrixXd::Zero(n, n));
+      std::make_shared<DenseMat>(DenseMat::Zero(n, n));
   for (std::size_t i = 0; i < n; ++i) {
     (*degreeMatrix)(i, i) = std::accumulate(adjacencyMatrix->col(i).begin(),
                                             adjacencyMatrix->col(i).end(), 0);
@@ -91,12 +91,12 @@ SparseGraph<Eigen::MatrixXd>::generateDegreeMatrix(
 }
 
 template <>
-const std::shared_ptr<const Eigen::SparseMatrix<double>>
-SparseGraph<Eigen::SparseMatrix<double>>::generateDegreeMatrix(
-    const std::shared_ptr<const Eigen::SparseMatrix<double>> adjacencyMatrix) {
+const std::shared_ptr<const SparseMat>
+SparseGraph<SparseMat>::generateDegreeMatrix(
+    const std::shared_ptr<const SparseMat> adjacencyMatrix) {
   std::size_t n = adjacencyMatrix->rows();
-  auto degreeMatrix = std::make_shared<Eigen::SparseMatrix<double>>(
-      Eigen::SparseMatrix<double>(n, n));
+  auto degreeMatrix = std::make_shared<SparseMat>(
+      SparseMat(n, n));
   for (std::size_t i = 0; i < n; ++i) {
     degreeMatrix->insert(i, i) =
         adjacencyMatrix->row(i) * Eigen::VectorXd::Ones(n);
@@ -105,8 +105,8 @@ SparseGraph<Eigen::SparseMatrix<double>>::generateDegreeMatrix(
 }
 
 template <>
-const bool SparseGraph<Eigen::MatrixXd>::connectedGraph(
-    const std::shared_ptr<const Eigen::MatrixXd> &adjacencyMatrix) {
+const bool SparseGraph<DenseMat>::connectedGraph(
+    const std::shared_ptr<const DenseMat> &adjacencyMatrix) {
   std::size_t order = adjacencyMatrix->rows();
   std::vector<bool> visited(order, false);
   std::deque<int> queue = {0};
@@ -130,8 +130,8 @@ const bool SparseGraph<Eigen::MatrixXd>::connectedGraph(
 }
 
 template <>
-const bool SparseGraph<Eigen::SparseMatrix<double>>::connectedGraph(
-    const std::shared_ptr<const Eigen::SparseMatrix<double>> &adjacencyMatrix) {
+const bool SparseGraph<SparseMat>::connectedGraph(
+    const std::shared_ptr<const SparseMat> &adjacencyMatrix) {
   std::size_t order = adjacencyMatrix->rows();
   std::vector<bool> visited(order, false);
   std::deque<int> queue = {0};
@@ -168,4 +168,14 @@ SparseGraph<T>::SparseGraph(const T g) try
 template <typename T>
 std::shared_ptr<const T> SparseGraph<T>::getAdjacencyMatrix() const{
   return adjacencyMatrix;
+}
+
+template <typename T>
+std::shared_ptr<const T> SparseGraph<T>::getDegreeMatrix() const{
+  return degreeMatrix;
+}
+
+template <typename T>
+std::shared_ptr<const T> SparseGraph<T>::getLaplacianMatrix() const {
+  return laplacianMatrix;
 }

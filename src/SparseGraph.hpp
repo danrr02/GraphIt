@@ -15,7 +15,11 @@ Declaration of the Graph class.
 #include <random>
 #include <vector>
 
+typedef Eigen::MatrixXd DenseMat;
+typedef Eigen::SparseMatrix<double> SparseMat;
+
 template <typename T> class SparseGraph {
+
   // Orer of the graph
   const std::size_t order;
 
@@ -54,25 +58,27 @@ public:
   static const std::shared_ptr<const T> generateAdjacencyMatrix(
       std::initializer_list<std::initializer_list<double>>);
 
-  static const std::shared_ptr<const Eigen::MatrixXd> generateAdjacencyMatrix(const Eigen::MatrixXd);
+  static const std::shared_ptr<const DenseMat>
+  generateAdjacencyMatrix(const DenseMat);
 
-  static const std::shared_ptr<const Eigen::SparseMatrix<double>> generateAdjacencyMatrix(const Eigen::SparseMatrix<double>);
+  static const std::shared_ptr<const SparseMat>
+  generateAdjacencyMatrix(const SparseMat);
 
-  static const std::shared_ptr<const Eigen::MatrixXd>
-  generateDegreeMatrix(const std::shared_ptr<const Eigen::MatrixXd>);
+  static const std::shared_ptr<const DenseMat>
+  generateDegreeMatrix(const std::shared_ptr<const DenseMat>);
 
-  static const std::shared_ptr<const Eigen::SparseMatrix<double>>
+  static const std::shared_ptr<const SparseMat>
   generateDegreeMatrix(
-      const std::shared_ptr<const Eigen::SparseMatrix<double>>);
+      const std::shared_ptr<const SparseMat>);
 
   static const bool
-  connectedGraph(const std::shared_ptr<const Eigen::MatrixXd> &);
+  connectedGraph(const std::shared_ptr<const DenseMat> &);
 
   static const bool
-  connectedGraph(const std::shared_ptr < const Eigen::SparseMatrix<double>> &);
+  connectedGraph(const std::shared_ptr<const SparseMat> &);
 
-      // generate random graphs
-      static SparseGraph<T> randomGraph(std::size_t, double);
+  // generate random graphs
+  static SparseGraph<DenseMat> randomGraph(std::size_t, double);
 
   static SparseGraph<T> randomGraph(std::size_t, double, int);
 
