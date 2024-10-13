@@ -57,12 +57,9 @@ public:
   // utility functions used by constructors
   static const std::shared_ptr<const T> generateAdjacencyMatrix(
       std::initializer_list<std::initializer_list<double>>);
-
-  static const std::shared_ptr<const DenseMat>
-  generateAdjacencyMatrix(const DenseMat);
-
-  static const std::shared_ptr<const SparseMat>
-  generateAdjacencyMatrix(const SparseMat);
+  
+  static const std::shared_ptr<const T>
+  generateAdjacencyMatrix(const T);
 
   static const std::shared_ptr<const DenseMat>
   generateDegreeMatrix(const std::shared_ptr<const DenseMat>);
@@ -72,10 +69,7 @@ public:
       const std::shared_ptr<const SparseMat>);
 
   static const bool
-  connectedGraph(const std::shared_ptr<const DenseMat> &);
-
-  static const bool
-  connectedGraph(const std::shared_ptr<const SparseMat> &);
+  connectedGraph(const std::shared_ptr<const T> &);
 
   // generate random graphs
   static SparseGraph<DenseMat> randomGraph(std::size_t, double);
