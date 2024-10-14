@@ -1,7 +1,12 @@
 #pragma once
 
 #include "Graph.hpp"
+#include "SparseGraph.hpp"
+#include <eigen3/Eigen/Core>
+#include <Spectra/SymEigsSolver.h>
 
-std::vector<double> Hall1D(Graph&);
+template<typename T>
+std::vector<double> Hall1D(SparseGraph<T>&);
 
-std::vector<std::pair<double,double>> Hall2D(Graph&);
+template<typename T>
+std::vector<std::pair<double,double>> Hall2D(SparseGraph<T>&);

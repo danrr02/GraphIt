@@ -169,3 +169,33 @@ const std::shared_ptr<const DenseMat> SparseGraph<DenseMat>::generateAdjacencyMa
   }
   return adjacencyMatrix;
 }
+
+template <>
+const std::shared_ptr<const SparseMat> SparseGraph<SparseMat>::generateAdjacencyMatrix(std::ifstream &file){
+  std::string ind;
+  std::string line;
+  std::getline(file,line);
+  std::stringstream line1(line);
+  getline(line1,ind,' ');
+  std::size_t n = std::stoi(ind);
+  std::shared_ptr<SparseMat> adjacencyMatrix(std::make_shared<SparseMat>(n,n));
+  for(std::size_t i = 0; i < n; ++i){
+    std::getline(file,line);
+    std::stringstream line2(line);
+    while(std::getline(line2,ind,' ')){
+      std::size_t j = std::stoi(ind);
+      adjacencyMatrix->insert(i,j-1) = 1;
+    }
+  }
+  return adjacencyMatrix;
+}
+
+
+template<>
+SparseGraph<SparseMat>::SparseGraph(std::ifstream &g)
+    : adjacencyMatrix(SparseGraph<SparseMat>::generateAdjacencyMatrix(g)),
+      order(adjacencyMatrix->rows()),
+      degreeMatrix(SparseGraph<SparseMat>::generateDegreeMatrix(adjacencyMatrix)),
+      laplacianMatrix(std::make_shared<SparseMat>(*degreeMatrix - *adjacencyMatrix)),
+      connected(SparseGraph<SparseMat>::connectedGraph(adjacencyMatrix)) {
+} 
