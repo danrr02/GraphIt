@@ -1,7 +1,12 @@
 #pragma once
 
 #include "SparseGraph.hpp"
+/*************************************************************************
+                            Utility functions
+*************************************************************************/
 
+
+// generates adjacency matrix from an input matrix
 template <typename T>
 const std::shared_ptr<const T>
 SparseGraph<T>::generateAdjacencyMatrix(const T g) {
@@ -26,6 +31,8 @@ SparseGraph<T>::generateAdjacencyMatrix(const T g) {
   return adjacencyMatrix;
 }
 
+
+// Dense matrix specialisation
 template <>
 const std::shared_ptr<const DenseMat>
 SparseGraph<DenseMat>::generateDegreeMatrix(
@@ -39,6 +46,8 @@ SparseGraph<DenseMat>::generateDegreeMatrix(
   return degreeMatrix;
 }
 
+
+// Sparse matrix specialisation
 template <>
 const std::shared_ptr<const SparseMat>
 SparseGraph<SparseMat>::generateDegreeMatrix(
@@ -51,100 +60,6 @@ SparseGraph<SparseMat>::generateDegreeMatrix(
   }
   return degreeMatrix;
 }
-
-template <typename T>
-const bool SparseGraph<T>::connectedGraph(
-    const std::shared_ptr<const T> &adjacencyMatrix) {
-  std::size_t order = adjacencyMatrix->rows();
-  std::vector<bool> visited(order, false);
-  std::deque<int> queue = {0};
-  visited[0] = true;
-  while (!queue.empty()) {
-    std::size_t curr = queue.front();
-    queue.pop_front();
-    for (std::size_t i = 0; i < order; ++i) {
-      if (adjacencyMatrix->coeff(curr, i) != 0 && !visited[i]) {
-        visited[i] = true;
-        queue.push_back(i);
-      }
-    }
-  }
-  for (bool node : visited) {
-    if (!node) {
-      return false;
-    }
-  }
-  return true;
-}
-
-template <typename T>
-SparseGraph<T>::SparseGraph(const T g) try
-    : adjacencyMatrix(SparseGraph<T>::generateAdjacencyMatrix(g)),
-      order(g.rows()),
-      degreeMatrix(SparseGraph<T>::generateDegreeMatrix(adjacencyMatrix)),
-      laplacianMatrix(std::make_shared<T>(*degreeMatrix - *adjacencyMatrix)),
-      connected(SparseGraph<T>::connectedGraph(adjacencyMatrix)) {
-} catch (const std::runtime_error &e) {
-  std::cerr << e.what() << std::endl;
-}
-
-template <typename T>
-std::shared_ptr<const T> SparseGraph<T>::getAdjacencyMatrix() const {
-  return adjacencyMatrix;
-}
-
-template <typename T>
-std::shared_ptr<const T> SparseGraph<T>::getDegreeMatrix() const {
-  return degreeMatrix;
-}
-
-template <typename T>
-std::shared_ptr<const T> SparseGraph<T>::getLaplacianMatrix() const {
-  return laplacianMatrix;
-}
-
-template <typename T> const bool SparseGraph<T>::isConnected() const {
-  return connected;
-}
-
-template <typename T> const std::size_t SparseGraph<T>::getOrder() const {
-  return order;
-}
-
-namespace Generate {
-template <>
-SparseGraph<DenseMat> randomGraph<DenseMat>(std::size_t order, double p) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  assert(p >= 0 && 1 >= p);
-  std::bernoulli_distribution d(p);
-  DenseMat adj(order, order);
-  for (std::size_t i = 0; i < order; ++i) {
-    for (std::size_t j = i + 1; j < order; ++j) {
-      adj(i, j) = d(gen);
-      adj(j, i) = adj(i, j);
-    }
-  }
-  return SparseGraph<DenseMat>(adj);
-}
-
-template <>
-SparseGraph<SparseMat> randomGraph<SparseMat>(std::size_t order, double p) {
-  std::random_device rd;
-  std::mt19937 gen(rd());
-  assert(p >= 0 && 1 >= p);
-  std::bernoulli_distribution d(p);
-  SparseMat adj(order, order);
-  for (std::size_t i = 0; i < order; ++i) {
-    for (std::size_t j = i + 1; j < order; ++j) {
-      int val = d(gen);
-      adj.insert(i, j) = val;
-      adj.insert(j, i) = val;
-    }
-  }
-  return SparseGraph<SparseMat>(adj);
-}
-} // namespace Generate
 
 template <>
 const std::shared_ptr<const DenseMat>
@@ -193,6 +108,76 @@ SparseGraph<SparseMat>::generateAdjacencyMatrix(std::ifstream &file) {
   return adjacencyMatrix;
 }
 
+
+// Runs a BFS to check for connectedness
+template <typename T>
+const bool SparseGraph<T>::connectedGraph(
+    const std::shared_ptr<const T> &adjacencyMatrix) {
+  std::size_t order = adjacencyMatrix->rows();
+  std::vector<bool> visited(order, false);
+  std::deque<int> queue = {0};
+  visited[0] = true;
+  while (!queue.empty()) {
+    std::size_t curr = queue.front();
+    queue.pop_front();
+    for (std::size_t i = 0; i < order; ++i) {
+      if (adjacencyMatrix->coeff(curr, i) != 0 && !visited[i]) {
+        visited[i] = true;
+        queue.push_back(i);
+      }
+    }
+  }
+  for (bool node : visited) {
+    if (!node) {
+      return false;
+    }
+  }
+  return true;
+}
+
+/*************************************************************************
+                              Getters
+*************************************************************************/
+
+template <typename T>
+std::shared_ptr<const T> SparseGraph<T>::getAdjacencyMatrix() const {
+  return adjacencyMatrix;
+}
+
+template <typename T>
+std::shared_ptr<const T> SparseGraph<T>::getDegreeMatrix() const {
+  return degreeMatrix;
+}
+
+template <typename T>
+std::shared_ptr<const T> SparseGraph<T>::getLaplacianMatrix() const {
+  return laplacianMatrix;
+}
+
+template <typename T> const bool SparseGraph<T>::isConnected() const {
+  return connected;
+}
+
+template <typename T> const std::size_t SparseGraph<T>::getOrder() const {
+  return order;
+}
+
+/*************************************************************************
+                             Constructors
+*************************************************************************/
+
+template <typename T>
+SparseGraph<T>::SparseGraph(const T g) try
+    : adjacencyMatrix(SparseGraph<T>::generateAdjacencyMatrix(g)),
+      order(g.rows()),
+      degreeMatrix(SparseGraph<T>::generateDegreeMatrix(adjacencyMatrix)),
+      laplacianMatrix(std::make_shared<T>(*degreeMatrix - *adjacencyMatrix)),
+      connected(SparseGraph<T>::connectedGraph(adjacencyMatrix)) {
+} catch (const std::runtime_error &e) {
+  std::cerr << e.what() << std::endl;
+}
+
+// Constrctor from file - currently only implemented for sparase matrices
 template <>
 SparseGraph<SparseMat>::SparseGraph(std::ifstream &g)
     : adjacencyMatrix(SparseGraph<SparseMat>::generateAdjacencyMatrix(g)),
@@ -202,3 +187,15 @@ SparseGraph<SparseMat>::SparseGraph(std::ifstream &g)
       laplacianMatrix(
           std::make_shared<SparseMat>(*degreeMatrix - *adjacencyMatrix)),
       connected(SparseGraph<SparseMat>::connectedGraph(adjacencyMatrix)) {}
+/*
+template <>
+SparseGraph<SparseMat>::SparseGraph(std::ifstream &g)
+    : adjacencyMatrix(SparseGraph<SparseMat>::generateAdjacencyMatrix(g)),
+      order(adjacencyMatrix->rows()),
+      degreeMatrix(
+          SparseGraph<SparseMat>::generateDegreeMatrix(adjacencyMatrix)),
+      laplacianMatrix(
+          std::make_shared<SparseMat>(*degreeMatrix - *adjacencyMatrix)),
+      connected(SparseGraph<SparseMat>::connectedGraph(adjacencyMatrix)) {}
+
+*/

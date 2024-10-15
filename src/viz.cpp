@@ -1,6 +1,6 @@
-#include "SparseHall.hpp"
+//#include "SparseHall.hpp"
 #include "SparseHall_impl.hpp"
-#include "SparseGraph.hpp"
+//#include "SparseGraph.hpp"
 #include "SparseGraph_impl.hpp"
 #include <SFML/Graphics.hpp>
 #include <array>
@@ -17,10 +17,10 @@ double _scale(std::vector<std::pair<double,double>> &points){
 
 
 int main() {
-  std::ifstream file("../data/ef_4elt2.txt");
-  SparseGraph<SparseMat> graph(*SparseGraph<SparseMat>::generateAdjacencyMatrix(file));
+  std::ifstream file("../data/4elt.txt");
+  SparseGraph<SparseMat> graph(file);
   //std::cout << *graph.getAdjacencyMatrix() << std::endl;
-  auto computedPoints = Hall2D<SparseMat>(graph);
+  auto computedPoints =   HDEHall2D(graph);
   int scale = 500*(int)_scale(computedPoints);
   std::cout << scale << std::endl;
   std::size_t n = graph.getOrder();
