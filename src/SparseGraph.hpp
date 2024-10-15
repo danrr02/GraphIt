@@ -43,7 +43,7 @@ public:
   // constuctor from matrix
   SparseGraph(const T);
 
-  SparseGraph<T>(std::ifstream&); // to implement
+  SparseGraph<T>(std::ifstream&);
 
   // getters for member fields
   std::shared_ptr<const T> getAdjacencyMatrix() const;

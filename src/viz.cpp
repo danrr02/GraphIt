@@ -5,12 +5,24 @@
 #include <SFML/Graphics.hpp>
 #include <array>
 
+auto comp = [](const std::pair<double,double>& a, const std::pair<double,double>& b){
+  return (std::pow(a.first,2)+std::pow(a.second,2))<(std::pow(b.first,2)+std::pow(b.second,2));
+};
+
+
+double _scale(std::vector<std::pair<double,double>> &points){
+  std::pair<double,double> a = *std::max_element(points.begin(),points.end(),comp);
+  return 1/std::pow((std::pow(a.first,2)+std::pow(a.second,2)),0.5);
+}
+
+
 int main() {
-  std::ifstream file("../data/4elt.txt");
-  double scale = 30000;
+  std::ifstream file("../data/ef_4elt2.txt");
   SparseGraph<SparseMat> graph(*SparseGraph<SparseMat>::generateAdjacencyMatrix(file));
   //std::cout << *graph.getAdjacencyMatrix() << std::endl;
   auto computedPoints = Hall2D<SparseMat>(graph);
+  int scale = 500*(int)_scale(computedPoints);
+  std::cout << scale << std::endl;
   std::size_t n = graph.getOrder();
   sf::RenderWindow window(sf::VideoMode(1000, 1000), "GraphIt");
   sf::VertexArray points(sf::PrimitiveType::Points);
