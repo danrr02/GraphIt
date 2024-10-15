@@ -110,6 +110,11 @@ const bool SparseGraph<T>::isConnected() const{
   return connected;
 }
 
+template <typename T>
+const std::size_t SparseGraph<T>::getOrder() const{
+  return order;
+}
+
 namespace Generate{
   template <>
   SparseGraph<DenseMat> randomGraph<DenseMat>(std::size_t order, double p){

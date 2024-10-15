@@ -6,6 +6,6 @@ int main(){
   //SparseGraph graph2(Generate::randomGraph<SparseMat>(1000,0.05));
   std::ifstream file("../data/nice.txt");
   //std::cout << *SparseGraph<SparseMat>::generateAdjacencyMatrix(file);
-  SparseGraph<SparseMat> graph(*SparseGraph<SparseMat>::generateAdjacencyMatrix(file));
-  //SparseGraph graph(mat);
+  SparseGraph<SparseMat> graph(file);
+  std::cout << *graph.getAdjacencyMatrix();
 } 

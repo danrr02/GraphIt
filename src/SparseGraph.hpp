@@ -22,9 +22,6 @@ typedef Eigen::SparseMatrix<double> SparseMat;
 
 template <typename T> class SparseGraph {
 
-  // Orer of the graph
-  const std::size_t order;
-
   // pointer to adjacency matrix
   const std::shared_ptr<const T> adjacencyMatrix;
 
@@ -35,6 +32,9 @@ template <typename T> class SparseGraph {
   const std::shared_ptr<const T> laplacianMatrix;
 
   const bool connected;
+
+  // Orer of the graph
+  const std::size_t order;
 
 public:
   // construct from initializer lists - for graphs defined by hand

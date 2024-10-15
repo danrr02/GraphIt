@@ -1,37 +1,31 @@
 #include "Hall.hpp"
+#include "Hall_impl.hpp"
+#include "SparseGraph.hpp"
+#include "SparseGraph_impl.hpp"
 #include <SFML/Graphics.hpp>
 #include <array>
 
 int main() {
-  int n = 50;
-  Graph graph(Graph::prettyRandomGraph(n,0.5,12));
-  /*
-  Graph graph({{0, 1, 0, 1, 1, 1, 0, 0, 0},
-               {1, 0, 1, 1, 0, 0, 0, 0, 1},
-               {0, 1, 0, 0, 0, 0, 0, 1, 1},
-               {1, 1, 0, 0, 0, 0, 1, 1, 0},
-               {1, 0, 0, 0, 0, 1, 0, 0, 1},
-               {1, 0, 0, 0, 1, 0, 1, 0, 0},
-               {0, 0, 0, 1, 0, 1, 0, 1, 0},
-               {0, 0, 1, 1, 0, 0, 1, 0, 0},
-               {0, 1, 1, 0, 1, 0, 0, 0, 0}});
-  */         
-  std::vector<std::pair<double, double>> computedPoints(Hall2D(graph));
+  std::ifstream file("../data/lattice.txt");
+  SparseGraph<SparseMat> graph(*SparseGraph<SparseMat>::generateAdjacencyMatrix(file));
+  //std::cout << *graph.getAdjacencyMatrix() << std::endl;
+  auto computedPoints = Hall2D<SparseMat>(graph);
+  std::size_t n = graph.getOrder();
   sf::RenderWindow window(sf::VideoMode(1000, 1000), "GraphIt");
   sf::VertexArray points(sf::PrimitiveType::Points);
   for (auto point : computedPoints) {
     points.append(
-        sf::Vector2f(500 + 2000 * point.first, 500 + 2000 * point.second));
+        sf::Vector2f(500 + 500 * point.first, 500 + 500 * point.second));
   }
 
   std::vector<std::vector<sf::Vertex>> lines;
   for (int i = 0; i < n; ++i) {
     for (int j = i + 1; j < n; ++j) {
-      if ((*graph.getAdjacencyMatrix())(i, j) > 0.001) {
-        lines.push_back({sf::Vertex(sf::Vector2f(500 + 2000 * computedPoints[i].first,
-                                   500 + 2000 * computedPoints[i].second)),
-                      sf::Vertex(sf::Vector2f(500 + 2000 * computedPoints[j].first,
-                                   500 + 2000 * computedPoints[j].second))});
+      if (graph.getAdjacencyMatrix()->coeff(i, j) > 0.001) {
+        lines.push_back({sf::Vertex(sf::Vector2f(500 + 500 * computedPoints[i].first,
+                                   500 + 500 * computedPoints[i].second)),
+                      sf::Vertex(sf::Vector2f(500 + 500 * computedPoints[j].first,
+                                   500 + 500 * computedPoints[j].second))});
       }
     }
   }
