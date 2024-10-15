@@ -6,7 +6,7 @@
 
 int main(){
   std::cout << "Hello World!" << std::endl;
-  std::ifstream file("../data/Petersen.txt");
+  std::ifstream file("../data/nice.txt");
   SparseGraph<SparseMat> graph(*SparseGraph<SparseMat>::generateAdjacencyMatrix(file));
   //std::cout << *graph.getAdjacencyMatrix() << std::endl;
   auto result1 = Hall2D<SparseMat>(graph);

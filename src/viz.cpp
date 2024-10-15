@@ -1,12 +1,13 @@
-#include "Hall.hpp"
-#include "Hall_impl.hpp"
+#include "SparseHall.hpp"
+#include "SparseHall_impl.hpp"
 #include "SparseGraph.hpp"
 #include "SparseGraph_impl.hpp"
 #include <SFML/Graphics.hpp>
 #include <array>
 
 int main() {
-  std::ifstream file("../data/lattice.txt");
+  std::ifstream file("../data/4elt.txt");
+  double scale = 30000;
   SparseGraph<SparseMat> graph(*SparseGraph<SparseMat>::generateAdjacencyMatrix(file));
   //std::cout << *graph.getAdjacencyMatrix() << std::endl;
   auto computedPoints = Hall2D<SparseMat>(graph);
@@ -15,17 +16,17 @@ int main() {
   sf::VertexArray points(sf::PrimitiveType::Points);
   for (auto point : computedPoints) {
     points.append(
-        sf::Vector2f(500 + 500 * point.first, 500 + 500 * point.second));
+        sf::Vector2f(500 + scale * point.first, 500 + scale * point.second));
   }
 
   std::vector<std::vector<sf::Vertex>> lines;
   for (int i = 0; i < n; ++i) {
     for (int j = i + 1; j < n; ++j) {
       if (graph.getAdjacencyMatrix()->coeff(i, j) > 0.001) {
-        lines.push_back({sf::Vertex(sf::Vector2f(500 + 500 * computedPoints[i].first,
-                                   500 + 500 * computedPoints[i].second)),
-                      sf::Vertex(sf::Vector2f(500 + 500 * computedPoints[j].first,
-                                   500 + 500 * computedPoints[j].second))});
+        lines.push_back({sf::Vertex(sf::Vector2f(500 + scale * computedPoints[i].first,
+                                   500 + scale * computedPoints[i].second)),
+                      sf::Vertex(sf::Vector2f(500 + scale * computedPoints[j].first,
+                                   500 + scale * computedPoints[j].second))});
       }
     }
   }
