@@ -1,1 +1,7 @@
-add_executable(test test.cpp Graph.cpp Hall.cpp)
+add_executable(test test.cpp )
+add_executable(SparseTest SparseTest.cpp)
+add_executable(SparseHallTest SparseHallTest.cpp)
+set(EIGEN_DIR /usr/include/eigen3)
+target_include_directories(test PRIVATE EIGEN_DIR)
+target_include_directories(SparseTest PRIVATE EIGEN_DIR)
+target_include_directories(SparseHallTest PRIVATE EIGEN_DIR)
