@@ -17,7 +17,7 @@ Below is shown some sample output:
 ![Screenshot from 2024-10-17 00-10-52-6](https://github.com/user-attachments/assets/d6198f0b-caf7-46d1-b271-513ae70cd15a)
 ![Screenshot from 2024-10-17 00-10-52-7](https://github.com/user-attachments/assets/83313a77-605c-426a-80bd-ac953904ff30)
 
-The follwing output was produced using a modified version of the algorithm which produced the above images. In this new case the graphs are embedded into an appropriately chosen high dimensional subspace before calculations are run. This allows the algorithm to deal with much larger graphs in finite time.
+The follwing output was produced using a modified version of the algorithm which produced the above images. In this new case the graphs are embedded into an appropriately chosen vector space before calculations are run. This allows the algorithm to deal with much larger graphs in finite time.
 
 ![Screenshot from 2024-10-17 00-10-52-8](https://github.com/user-attachments/assets/77483bb9-2662-4332-9c5e-c1ce02783908)
 ![Screenshot from 2024-10-17 00-10-52-9](https://github.com/user-attachments/assets/60806faa-3767-496f-8d93-af85465ea692)
